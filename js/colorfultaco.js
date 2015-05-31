@@ -7,6 +7,7 @@
     }
 
     function create() {
+        game.add.sprite(0, 0, 'sky');
         game.add.sprite(0, 0, 'taco');
     }
 
