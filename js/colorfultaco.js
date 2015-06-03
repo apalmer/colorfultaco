@@ -1,6 +1,8 @@
 ﻿window.onload = function () {
     var game = new Phaser.Game(800, 600, Phaser.AUTO, 'canvas-container', { preload: preload, create: create, update: update });
-
+    var player;
+    var speed = 5;
+    
     function preload() {
         game.load.image('sky','img/sky.png');
         game.load.image('ground','img/ground.png');
@@ -41,11 +43,12 @@
         ledge.body.immovable = true;
         
         // The player and its settings
-        var player = game.add.sprite(32, game.world.height - 220, 'player');
+        player = game.add.sprite(32, game.world.height - 220, 'player');
         player.animations.add('bottom', [0,1,2,3,4,5,6,7,8,9,10,11], 12, true, true);
         player.animations.add('left', [12,13,14,15,16,17,18,19,20,21,22,23], 12, true, true);
         player.animations.add('right', [24,25,26,27,28,29,30,31,32,33,34,35], 12, true, true);
-        player.animations.play('right');
+        
+        
         
         //player.scale.setTo(1.5,1.5);  
     
@@ -64,6 +67,25 @@
     }
 
     function update() {
-
+        if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT))
+        {
+            player.x -= speed;
+      
+            player.animations.play('left');
+        }
+        else if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT))
+        {
+            player.x += speed;
+            
+            player.animations.play('right');
+        }
+        else if(false)
+        {
+            
+        }
+        else
+        {
+            player.animations.stop();    
+        }
     }
 };
