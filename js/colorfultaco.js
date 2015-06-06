@@ -46,18 +46,21 @@ window.onload = function () {
         ground.body.fixedRotation = true;
         ground.body.immovable=true;
         ground.body.moves = false;
+        ground.body.kinematic = true;
         ground.body.setCollisionGroup(platformsCollisionGroup);
         ground.body.collides([platformsCollisionGroup,playerCollisionGroup]);
         //  Now let's create two ledges
         ledge = platforms.create(500, 400, 'ground');
         ledge.body.fixedRotation = true;
         ledge.body.immovable=true;
+        ledge.body.kinematic = true;
         ledge.body.setCollisionGroup(platformsCollisionGroup);
         ledge.body.collides([platformsCollisionGroup,playerCollisionGroup]);
         
         ledge2 = platforms.create(650, 250, 'ground');
         ledge2.body.fixedRotation = true;
         ledge2.body.immovable = true;
+        ledge2.body.kinematic = true;
         ledge2.body.setCollisionGroup(platformsCollisionGroup);
         ledge2.body.collides([platformsCollisionGroup,playerCollisionGroup]);
                
