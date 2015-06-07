@@ -4,7 +4,7 @@
 window.onload = function () {
     var game = new Phaser.Game(800, 600, Phaser.AUTO, 'canvas-container', { preload: preload, create: create, update: update });
     var player;
-    var speed = 50;
+    var speed = 150;
     var facing = 'left';
     var cursors;
     var jumpButton;
@@ -16,11 +16,12 @@ window.onload = function () {
     function preload() {
         game.load.image('sky','img/sky.png');
         game.load.image('ground','img/ground.png');
-        
         game.load.spritesheet('player','img/damaged.png', 95, 158, 36);
     }
 
     function create() {
+        
+        game.world.setBounds(0, 0,1112,600);
         
         game.physics.startSystem(Phaser.Physics.P2JS);
         game.physics.p2.gravity.y = 500;
@@ -41,14 +42,23 @@ window.onload = function () {
         game.physics.p2.updateBoundsCollisionGroup();
         
         // Here we create the ground.
-        ground = platforms.create(0, game.world.height - 64, 'ground');
-        ground.scale.setTo(7, 1);
+        ground = platforms.create(60, game.world.height - 60, 'ground');
         ground.body.fixedRotation = true;
         ground.body.immovable=true;
         ground.body.moves = false;
         ground.body.kinematic = true;
         ground.body.setCollisionGroup(platformsCollisionGroup);
         ground.body.collides([platformsCollisionGroup,playerCollisionGroup]);
+        
+        for (var index = 0; index < 100; index++) {
+            ground = platforms.create(60 + (index*120), game.world.height - 60, 'ground');
+            ground.body.fixedRotation = true;
+            ground.body.immovable=true;
+            ground.body.moves = false;
+            ground.body.kinematic = true;
+            ground.body.setCollisionGroup(platformsCollisionGroup);
+            ground.body.collides([platformsCollisionGroup,playerCollisionGroup]);
+        }
         //  Now let's create two ledges
         ledge = platforms.create(500, 400, 'ground');
         ledge.body.fixedRotation = true;
@@ -65,7 +75,7 @@ window.onload = function () {
         ledge2.body.collides([platformsCollisionGroup,playerCollisionGroup]);
                
         // The player and its settings
-        player = game.add.sprite(32, game.world.height - 220, 'player');
+        player = game.add.sprite(32, game.world.height - 120, 'player');
         player.animations.add('idle', [0,1,2,3,4,5,6,7,8,9,10,11], 12, true, true);
         player.animations.add('left', [12,13,14,15,16,17,18,19,20,21,22,23], 12, true, true);
         player.animations.add('right', [24,25,26,27,28,29,30,31,32,33,34,35], 12, true, true);
@@ -93,18 +103,11 @@ window.onload = function () {
         
         cursors = game.input.keyboard.createCursorKeys();
         jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        
+        game.camera.follow(player);
     }
 
     function update() {
-        
-        ground.body.velocity.x = 0;
-        ground.body.velocity.y = 0;
-        
-        ledge.body.velocity.x = 0;
-        ledge.body.velocity.y = 0;
-        
-        ledge2.body.velocity.x = 0;
-        ledge2.body.velocity.y = 0;
         
         if (cursors.left.isDown)
         {
@@ -147,8 +150,8 @@ window.onload = function () {
         
         if (jumpButton.isDown && game.time.now > jumpTimer)
         {
-            player.body.velocity.y = -500;
-            jumpTimer = game.time.now + 750;
+            player.body.velocity.y = -3*speed;
+            jumpTimer = game.time.now + 500;
         }
     }
     
