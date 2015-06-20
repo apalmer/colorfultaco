@@ -2,26 +2,47 @@
 /// <reference path="../ts/phaser.d.ts" />
 
 window.onload = function () {
-    var game = new Phaser.Game(800, 600, Phaser.AUTO, 'canvas-container', { preload: preload, create: create, update: update });
+    var game = new Phaser.Game(1562, 840, Phaser.AUTO, 'canvas-container', { preload: preload, create: create, update: update });
     var player;
     var speed = 150;
     var facing = 'left';
     var cursors;
     var jumpButton;
     var jumpTimer = 0;
-    var ground;
-    var ledge;
-    var ledge2;
+    var map;
+    var background;
     
     function preload() {
+        
+        game.load.tilemap('level1', 'assets/level1.json', null, Phaser.Tilemap.TILED_JSON);
         game.load.image('sky','img/sky.png');
-        game.load.image('ground','img/ground.png');
+        game.load.image('Kenny','img/tiles_spritesheet.png');
         game.load.spritesheet('player','img/damaged.png', 95, 158, 36);
     }
 
     function create() {
         
-        game.world.setBounds(0, 0,1112,600);
+        background = game.add.sprite(1562, 608, 'sky');
+        background.x = 0;
+        background.y = 0;
+        background.height = game.height;
+        background.width = game.width;
+        //background.scale(1,1);
+        
+        map = game.add.tilemap('level1');
+
+        map.addTilesetImage('Kenny');
+        
+        //map.setCollisionByExclusion([ 13, 14, 15, 16, 46, 47, 48, 49, 50, 51 ]);
+        
+        var layer = map.createLayer('Tile Layer 1');
+        
+        //  Un-comment this on to see the collision tiles
+        //layer.debug = true;
+        
+        layer.resizeWorld();
+        
+        /*game.world.setBounds(0, 0,1112,600);
         
         game.physics.startSystem(Phaser.Physics.P2JS);
         game.physics.p2.gravity.y = 500;
@@ -104,12 +125,12 @@ window.onload = function () {
         cursors = game.input.keyboard.createCursorKeys();
         jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         
-        game.camera.follow(player);
+        game.camera.follow(player);*/
     }
 
     function update() {
         
-        if (cursors.left.isDown)
+/*        if (cursors.left.isDown)
         {
             player.body.velocity.x = -1*speed;
     
@@ -152,7 +173,7 @@ window.onload = function () {
         {
             player.body.velocity.y = -3*speed;
             jumpTimer = game.time.now + 500;
-        }
+        }*/
     }
     
 };
