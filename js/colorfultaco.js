@@ -1,5 +1,5 @@
-﻿/// <reference path="../ts/phaser.comments.d.ts" />
-/// <reference path="../ts/phaser.d.ts" />
+﻿/// <reference path="../vnd/ts/phaser.comments.d.ts" />
+/// <reference path="../vnd/ts/phaser.d.ts" />
 
 window.onload = function () {
     var game = new Phaser.Game(1562, 840, Phaser.AUTO, 'canvas-container', { preload: preload, create: create, update: update });
