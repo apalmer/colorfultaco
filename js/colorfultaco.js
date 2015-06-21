@@ -55,12 +55,24 @@ window.onload = function () {
         var walkFrames = ['alienGreen_walk1.png','alienGreen_walk2.png'];
         player.animations.add('walk', walkFrames, 30, true);
         
+        var swimFrames = ['alienGreen_swim1.png','alienGreen_swim2.png'];
+        player.animations.add('swim', swimFrames, 30, true);
+        
+        var climbFrames = ['alienGreen_climb1.png','alienGreen_climb2.png'];
+        player.animations.add('climb', climbFrames, 30, true);
+        
         var jumpFrames = ['alienGreen_jump.png'];
         player.animations.add('jump', jumpFrames, 30, true);
         
         var idleFrames = ['alienGreen_stand.png'];
         player.animations.add('idle', idleFrames, 1, true);    
-            
+        
+        var crouchFrames = ['alienGreen_duck.png'];
+        player.animations.add('crouch', crouchFrames, 1, true);    
+        
+        var hurtFrames = ['alienGreen_hurt.png'];
+        player.animations.add('hurt', hurtFrames, 1, true);    
+        
         game.physics.p2.enable(player);  
         player.body.fixedRotation = true;
           
@@ -91,6 +103,9 @@ window.onload = function () {
             player.animations.play('jump', 1, true);
             player.body.velocity.y = -3*speed;
         }
+        else if (cursors.down.isDown && onGround){
+                player.animations.play('crouch', 6, true);
+        }
         else if (cursors.left.isDown)
         {
             flip(player, 'left');
@@ -110,8 +125,6 @@ window.onload = function () {
         else if(onGround){
             player.animations.play('idle', 6, true);
         }
-        
-        
     }
     
     function flip(sprite, direction) {
