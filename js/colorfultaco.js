@@ -11,7 +11,6 @@ window.onload = function () {
     var background;
     
     function preload() {
-        
         game.load.tilemap('level1', 'data/level1.json', null, Phaser.Tilemap.TILED_JSON);
         game.load.image('background','img/sky.png');
         game.load.image('tiles','img/tiles_spritesheet.png');
@@ -20,62 +19,12 @@ window.onload = function () {
 
     function create() {
         
-        game.physics.startSystem(Phaser.Physics.P2JS);
-        game.physics.p2.gravity.y = 500;
-        game.physics.p2.setImpactEvents(true);
-        game.physics.p2.restitution = 0.1;
+        _initializePhysics(game);
         
-        background = game.add.sprite(1562, 608, 'background');
-        background.x = 0;
-        background.y = 0;
-        background.height = game.height;
-        background.width = game.width;
+        background = _createBackground(game);
+        map = _createMap(game);       
+        player = _createPlayer(game);
         
-        map = game.add.tilemap('level1');
-
-        map.addTilesetImage('tiles');
-                
-        var layer = map.createLayer('Tile Layer 1');
-        
-        //  Un-comment this on to see the collision tiles
-        // layer.debug = true;
-        
-        layer.resizeWorld();  
- 
-        map.setCollisionByExclusion([], true);
-   
-        //  Convert the tilemap layer into bodies. Only tiles that collide (see above) are created.
-        //  This call returns an array of body objects which you can perform addition actions on if
-        //  required. There is also a parameter to control optimising the map build.
-        game.physics.p2.convertTilemap(map, layer);
-        
-        // The player and its settings
-        player = game.add.sprite(571, 96, 'player');
-   
-        var walkFrames = ['alienGreen_walk1.png','alienGreen_walk2.png'];
-        player.animations.add('walk', walkFrames, 30, true);
-        
-        var swimFrames = ['alienGreen_swim1.png','alienGreen_swim2.png'];
-        player.animations.add('swim', swimFrames, 30, true);
-        
-        var climbFrames = ['alienGreen_climb1.png','alienGreen_climb2.png'];
-        player.animations.add('climb', climbFrames, 30, true);
-        
-        var jumpFrames = ['alienGreen_jump.png'];
-        player.animations.add('jump', jumpFrames, 30, true);
-        
-        var idleFrames = ['alienGreen_stand.png'];
-        player.animations.add('idle', idleFrames, 1, true);    
-        
-        var crouchFrames = ['alienGreen_duck.png'];
-        player.animations.add('crouch', crouchFrames, 1, true);    
-        
-        var hurtFrames = ['alienGreen_hurt.png'];
-        player.animations.add('hurt', hurtFrames, 1, true);    
-        
-        game.physics.p2.enable(player);  
-        player.body.fixedRotation = true;
-          
         game.camera.follow(player);
         
         //  By default the ship will collide with the World bounds,
@@ -89,10 +38,9 @@ window.onload = function () {
         cursors = game.input.keyboard.createCursorKeys();
         jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     }
-
+    
     function update() {
-        
-        var onGround = touchingDown(player);
+        var onGround = _touchingDown(player,game);
         
         if(!onGround){
             player.animations.play('jump', 1, true);
@@ -108,7 +56,7 @@ window.onload = function () {
         }
         else if (cursors.left.isDown)
         {
-            flip(player, 'left');
+            _flip(player, 'left');
             if(onGround){
                 player.animations.play('walk', 6, true);
             }
@@ -116,7 +64,7 @@ window.onload = function () {
         }
         else if (cursors.right.isDown)
         {
-            flip(player, 'right');
+            _flip(player, 'right');
             if(onGround){
                 player.animations.play('walk', 6, true);
             }
@@ -127,7 +75,76 @@ window.onload = function () {
         }
     }
     
-    function flip(sprite, direction) {
+    function _initializePhysics(game){
+         
+        game.physics.startSystem(Phaser.Physics.P2JS);
+        game.physics.p2.gravity.y = 500;
+        game.physics.p2.setImpactEvents(true);
+        game.physics.p2.restitution = 0.1;
+    };
+    
+    function _createBackground(game){
+        var _background = game.add.sprite(1562, 608, 'background');
+        
+        _background.x = 0;
+        _background.y = 0;
+        _background.height = game.height;
+        _background.width = game.width;
+        
+        return _background;    
+    }
+    
+    function _createMap(game){
+        
+        var _map = game.add.tilemap('level1');
+
+        _map.addTilesetImage('tiles');
+                
+        var _layer = _map.createLayer('Tile Layer 1');
+        //  Un-comment this on to see the collision tiles
+        // _layer.debug = true;
+        
+        _layer.resizeWorld();  
+ 
+        _map.setCollisionByExclusion([], true);
+   
+        //  Convert the tilemap layer into bodies. Only tiles that collide (see above) are created.
+        //  This call returns an array of body objects which you can perform addition actions on if
+        //  required. There is also a parameter to control optimising the map build.
+        game.physics.p2.convertTilemap(_map, _layer);
+    };
+    
+    function _createPlayer(game){
+        var _player = game.add.sprite(571, 96, 'player');
+   
+        var walkFrames = ['alienGreen_walk1.png','alienGreen_walk2.png'];
+        _player.animations.add('walk', walkFrames, 30, true);
+        
+        var swimFrames = ['alienGreen_swim1.png','alienGreen_swim2.png'];
+        _player.animations.add('swim', swimFrames, 30, true);
+        
+        var climbFrames = ['alienGreen_climb1.png','alienGreen_climb2.png'];
+        _player.animations.add('climb', climbFrames, 30, true);
+        
+        var jumpFrames = ['alienGreen_jump.png'];
+        _player.animations.add('jump', jumpFrames, 30, true);
+        
+        var idleFrames = ['alienGreen_stand.png'];
+        _player.animations.add('idle', idleFrames, 1, true);    
+        
+        var crouchFrames = ['alienGreen_duck.png'];
+        _player.animations.add('crouch', crouchFrames, 1, true);    
+        
+        var hurtFrames = ['alienGreen_hurt.png'];
+        _player.animations.add('hurt', hurtFrames, 1, true);    
+        
+        game.physics.p2.enable(_player);  
+        _player.body.fixedRotation = true;
+        
+        return _player;
+    };
+    
+    function _flip(sprite, direction) {
         if(sprite.direction !== direction){
             if(direction === 'right'){
                 sprite.scale.x = Math.abs(sprite.scale.x);
@@ -138,17 +155,17 @@ window.onload = function () {
         }
     }
     
-    function touchingDown(someone) {
-        var yAxis = p2.vec2.fromValues(0, 1);
-        var result = false;
-        for (var i = 0; i < game.physics.p2.world.narrowphase.contactEquations.length; i++) {
-            var c = game.physics.p2.world.narrowphase.contactEquations[i];  // cycles through all the contactEquations until it finds our "someone"
-            if (c.bodyA === someone.body.data || c.bodyB === someone.body.data)        {
-                var d = p2.vec2.dot(c.normalA, yAxis); // Normal dot Y-axis
-                if (c.bodyA === someone.body.data) d *= -1;
-                if (d > 0.5) result = true;
+    function _touchingDown(someone, game) {
+        var _yAxis = p2.vec2.fromValues(0, 1);
+        var _result = false;
+        for (var _i = 0; _i < game.physics.p2.world.narrowphase.contactEquations.length; _i++) {
+            var _c = game.physics.p2.world.narrowphase.contactEquations[_i];  // cycles through all the contactEquations until it finds our "someone"
+            if (_c.bodyA === someone.body.data || _c.bodyB === someone.body.data)        {
+                var _d = p2.vec2.dot(_c.normalA, _yAxis); // Normal dot Y-axis
+                if (_c.bodyA === someone.body.data) _d *= -1;
+                if (_d > 0.5) _result = true;
             }
-        } return result;
+        } return _result;
     }
     
 };
